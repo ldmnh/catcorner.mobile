@@ -1,16 +1,18 @@
-import "./global.css";
+import "../../global.css";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Theme, ThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform } from "react-native";
+import { Platform, View, StyleSheet } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "@/components";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { Text } from "~/components/ui/text";
+import * as JosefinSans from "@expo-google-fonts/josefin-sans";
 
 const LIGHT_THEME: Theme = {
   dark: false,
@@ -32,6 +34,16 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+
+  const [loaded, error] = JosefinSans.useFonts({
+    ...JosefinSans,
+  });
+
+  React.useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
 
   React.useEffect(() => {
     (async () => {
@@ -63,19 +75,33 @@ export default function RootLayout() {
     return null;
   }
 
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Starter Base",
-            headerRight: () => <ThemeToggle />,
-          }}
-        />
-      </Stack>
-      <PortalHost />
+      <View style={styles.container}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              title: "Starter Base",
+              headerRight: () => <ThemeToggle />,
+            }}
+          />
+        </Stack>
+
+        <PortalHost />
+      </View>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+});

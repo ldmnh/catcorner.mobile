@@ -15,7 +15,6 @@ import {
 import { Progress } from "~/components/ui/progress";
 import { Text } from "~/components/ui/text";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { Apple } from "lucide-react-native";
 import { Link } from "expo-router";
 
 const GITHUB_AVATAR_URI =
@@ -29,6 +28,9 @@ export default function Screen() {
   }
   return (
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
+      <Link href="/register" className="dark:text-white">
+        Go to auth register
+      </Link>
       <Link href="/login" className="dark:text-white">
         Go to auth login
       </Link>
@@ -38,6 +40,12 @@ export default function Screen() {
       <Link href="/profile" className="dark:text-white">
         Go to auth profile
       </Link>
+
+      <Text fontStyle="josefin-bold">dabcwacjwacawdnaowdiawpc a ewabcwand ahdaDSAd aw uda wd</Text>
+      <Text fontStyle="josefin-medium-italic">
+        dabcwacjwacawdnaowdiawpc a ewabcwand ahdaDSAd aw uda wd
+      </Text>
+
       <Card className="w-full max-w-sm p-6 rounded-2xl">
         <CardHeader className="items-center">
           <Avatar alt="Rick Sanchez's Avatar" className="w-24 h-24">

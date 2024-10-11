@@ -1,0 +1,16 @@
+export const FONT_STYLE_MAP = {
+  "josefin-thin": "JosefinSans_100Thin",
+  "josefin-extra-light": "JosefinSans_200ExtraLight",
+  "josefin-light": "JosefinSans_300Light",
+  "josefin-regular": "JosefinSans_400Regular",
+  "josefin-medium": "JosefinSans_500Medium",
+  "josefin-semi-bold": "JosefinSans_600SemiBold",
+  "josefin-bold": "JosefinSans_700Bold",
+  "josefin-thin-italic": "JosefinSans_100Thin_Italic",
+  "josefin-extra-light-italic": "JosefinSans_200ExtraLight_Italic",
+  "josefin-light-italic": "JosefinSans_300Light_Italic",
+  "josefin-regular-italic": "JosefinSans_400Regular_Italic",
+  "josefin-medium-italic": "JosefinSans_500Medium_Italic",
+  "josefin-semi-bold-italic": "JosefinSans_600SemiBold_Italic",
+  "josefin-bold-italic": "JosefinSans_700Bold_Italic",
+};
