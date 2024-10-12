@@ -41,6 +41,15 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        // primary color
+        "pri-1": "#1E4646",
+        "pri-2": "#B3E0E6",
+        "pri-3": "#EAFBE4",
+        "pri-4": "#F9DCC5",
+        "pri-5": "#FFF6D8",
+        "pri-6": "#315475",
+        "pri-7": "#669E9E",
       },
       borderWidth: {
         hairline: hairlineWidth(),

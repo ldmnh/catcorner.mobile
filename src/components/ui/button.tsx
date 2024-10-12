@@ -16,12 +16,18 @@ const buttonVariants = cva(
         secondary: "bg-secondary web:hover:opacity-80 active:opacity-80",
         ghost: "web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent",
         link: "web:underline-offset-4 web:hover:underline web:focus:underline ",
+
+        // custom button variant
+        "rounded-pri1": "bg-pri-1 rounded-full",
+        "rounded-border": "bg-transparent rounded-full border-[1px] border-black",
       },
       size: {
         default: "h-10 px-4 py-2 native:h-12 native:px-5 native:py-3",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8 native:h-14",
         icon: "h-10 w-10",
+        "2xl": "w-full h-[56px]",
+        xl: "w-full h-[48px]",
       },
     },
     defaultVariants: {
@@ -42,12 +48,18 @@ const buttonTextVariants = cva(
         secondary: "text-secondary-foreground group-active:text-secondary-foreground",
         ghost: "group-active:text-accent-foreground",
         link: "text-primary group-active:underline",
+
+        // custom text variants
+        "rounded-pri1": "text-white text-center",
+        "rounded-border": "w-1/2 !text-xl text-gray-600",
       },
       size: {
         default: "",
         sm: "",
         lg: "native:text-lg",
         icon: "",
+        "2xl": "!text-2xl",
+        xl: "!text-xl",
       },
     },
     defaultVariants: {
