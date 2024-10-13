@@ -1,15 +1,160 @@
-import { ScrollView, View } from "react-native";
 import React, { useState } from "react";
+import { ScrollView, View, Alert } from "react-native";
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Button } from "~/components/ui/button";
-import { Image } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Link } from "expo-router";
 
 const Register = () => {
-  const [agreeTerm, setAgreeTerm] = useState<boolean>(false);
-  const [agreeSubcribe, setAgreeSubcribe] = useState<boolean>(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeTerm, setAgreeTerm] = useState(false);
+  const [agreeSubscribe, setAgreeSubscribe] = useState(false);
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    agreeTerm: "",
+  });
+
+  const nameRegex = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăêếềđ\s]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validateFirstName = (text: string) => {
+    setFirstName(text);
+    if (text === "") setErrors((prev) => ({ ...prev, firstName: "First name is required." }));
+    else if (!text.match(nameRegex)) {
+      setErrors((prev) => ({ ...prev, firstName: "First name must contain only letters." }));
+    } else {
+      setErrors((prev) => ({ ...prev, firstName: "" }));
+    }
+  };
+
+  const validateLastName = (text: string) => {
+    setLastName(text);
+    if (text === "") setErrors((prev) => ({ ...prev, firstName: "Last name is required." }));
+    else if (!text.match(nameRegex)) {
+      setErrors((prev) => ({ ...prev, lastName: "Last name must contain only letters." }));
+    } else {
+      setErrors((prev) => ({ ...prev, lastName: "" }));
+    }
+  };
+
+  const validateEmail = (text: string) => {
+    setEmail(text);
+    if (!text.match(emailRegex)) {
+      setErrors((prev) => ({ ...prev, email: "Please enter a valid email address." }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const validatePassword = (text: string) => {
+    setPassword(text);
+    if (text.length < 6) {
+      setErrors((prev) => ({ ...prev, password: "Password must be at least 6 characters." }));
+    } else {
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }
+  };
+
+  const validateConfirmPassword = (text: string) => {
+    setConfirmPassword(text);
+    if (text !== password) {
+      setErrors((prev) => ({ ...prev, confirmPassword: "Passwords do not match." }));
+    } else if (text === "") {
+      setErrors((prev) => ({ ...prev, confirmPassword: "Confirm password is required" }));
+    } else {
+      setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+    }
+  };
+
+  const validateAgreeTerm = (value: boolean) => {
+    setAgreeTerm(value);
+    if (value === true) setErrors((prev) => ({ ...prev, agreeTerm: "" }));
+    else
+      setErrors((prev) => ({
+        ...prev,
+        agreeTerm: "You must agree to the terms and conditions.",
+      }));
+  };
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      agreeTerm: "",
+    };
+
+    // Kiểm tra First Name
+    if (firstName === "") {
+      newErrors.firstName = "First name is required.";
+      valid = false;
+    } else if (!firstName.match(nameRegex)) {
+      newErrors.firstName = "First name must contain only letters.";
+      valid = false;
+    }
+
+    // Kiểm tra Last Name
+    if (!lastName) {
+      newErrors.lastName = "Last name is required.";
+      valid = false;
+    } else if (!lastName.match(nameRegex)) {
+      newErrors.lastName = "Last name must contain only letters.";
+      valid = false;
+    }
+
+    // Kiểm tra Email
+    if (!email) {
+      newErrors.email = "Email is required.";
+      valid = false;
+    } else if (!email.match(emailRegex)) {
+      newErrors.email = "Please enter a valid email address.";
+      valid = false;
+    }
+
+    // Kiểm tra Password
+    if (!password) {
+      newErrors.password = "Password is required.";
+      valid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters.";
+      valid = false;
+    }
+
+    // Kiểm tra Confirm Password
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required.";
+      valid = false;
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+      valid = false;
+    }
+
+    // Kiểm tra Agree to Terms
+    if (!agreeTerm) {
+      newErrors.agreeTerm = "You must agree to the terms and conditions.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = () => {
+    validateForm();
+  };
 
   return (
     <ScrollView className="p-4">
@@ -23,62 +168,117 @@ const Register = () => {
           </Text>
         </View>
 
+        {/* First Name and Last Name */}
         <View className="flex flex-col gap-2">
-          <View className="w-full flex flex-row justify-between gap-2">
-            <View className="w-[49%] flex flex-col gap-2">
-              <Text className="text-gray-600">First Name:</Text>
-              <Input
-                textContentType="namePrefix"
-                placeholder="Enter first name..."
-                className="placeholder:text-sm"
-              />
-            </View>
-
-            <View className="w-[49%] flex flex-col gap-2">
-              <Text className="text-gray-600">Last Name:</Text>
-              <Input
-                textContentType="nameSuffix"
-                placeholder="Enter last name..."
-                className="placeholder:text-sm"
-              />
-            </View>
+          <View className="flex flex-row justify-between">
+            <Text className={`w-1/5 text-gray-600 ${errors.firstName ? "text-red-500" : ""}`}>
+              First Name:
+            </Text>
+            {errors.firstName ? (
+              <Text className="w-4/5 text-right text-red-500">{errors.firstName}</Text>
+            ) : null}
           </View>
-
-          <View className="flex flex-col gap-2">
-            <Text className="text-gray-600">Email:</Text>
-            <Input
-              inputMode="email"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              placeholder="Enter email address..."
-              className="placeholder:text-sm"
-            />
-          </View>
-
-          <View className="flex flex-col gap-2">
-            <Text className="text-gray-600">Password:</Text>
-            <Input
-              textContentType="password"
-              secureTextEntry={true}
-              placeholder="Enter password..."
-              className="placeholder:text-sm"
-            />
-          </View>
-
-          <View className="flex flex-col gap-2">
-            <Text className="text-gray-600">Confirm password:</Text>
-            <Input
-              textContentType="password"
-              secureTextEntry={true}
-              placeholder="Enter confirm password..."
-              className="placeholder:text-sm"
-            />
-          </View>
+          <Input
+            value={firstName}
+            onChangeText={validateFirstName}
+            placeholder="Enter first name..."
+            className={`placeholder:text-sm ${
+              errors.firstName ? "border-red-500 placeholder:text-red-500" : ""
+            }`}
+          />
         </View>
 
+        <View className="flex flex-col gap-2">
+          <View className="flex flex-row justify-between">
+            <Text className={`w-1/5 text-gray-600 ${errors.lastName ? "text-red-500" : ""}`}>
+              Last Name:
+            </Text>
+            {errors.lastName ? (
+              <Text className="w-4/5 text-right text-red-500">{errors.lastName}</Text>
+            ) : null}
+          </View>
+          <Input
+            value={lastName}
+            onChangeText={validateLastName}
+            placeholder="Enter last name..."
+            className={`placeholder:text-sm ${
+              errors.lastName ? "border-red-500 placeholder:text-red-500" : ""
+            }`}
+          />
+        </View>
+
+        {/* Email */}
+        <View className="flex flex-col gap-2">
+          <View className="flex flex-row justify-between">
+            <Text className={`w-1/5 text-gray-600 ${errors.email ? "text-red-500" : ""}`}>
+              Email:
+            </Text>
+            {errors.email ? (
+              <Text className="w-4/5 text-right text-red-500">{errors.email}</Text>
+            ) : null}
+          </View>
+          <Input
+            value={email}
+            onChangeText={validateEmail}
+            inputMode="email"
+            keyboardType="email-address"
+            placeholder="Enter email address..."
+            className={`placeholder:text-sm ${
+              errors.email ? "border-red-500 placeholder:text-red-500" : ""
+            }`}
+          />
+        </View>
+
+        {/* Password */}
+        <View className="flex flex-col gap-2">
+          <View className="flex flex-row justify-between">
+            <Text className={`w-1/5 text-gray-600 ${errors.password ? "text-red-500" : ""}`}>
+              Password:
+            </Text>
+            {errors.password ? (
+              <Text className="w-4/5 text-right text-red-500">{errors.password}</Text>
+            ) : null}
+          </View>
+          <Input
+            value={password}
+            onChangeText={validatePassword}
+            secureTextEntry
+            placeholder="Enter password..."
+            className={`placeholder:text-sm ${
+              errors.password ? "border-red-500 placeholder:text-red-500" : ""
+            }`}
+          />
+        </View>
+
+        {/* Confirm Password */}
+        <View className="flex flex-col gap-2">
+          <View className="flex flex-row justify-between">
+            <Text className={`w-2/5 text-gray-600 ${errors.confirmPassword ? "text-red-500" : ""}`}>
+              Confirm password:
+            </Text>
+            {errors.confirmPassword ? (
+              <Text className="w-3/5 text-right text-red-500">{errors.confirmPassword}</Text>
+            ) : null}
+          </View>
+          <Input
+            value={confirmPassword}
+            onChangeText={validateConfirmPassword}
+            secureTextEntry
+            placeholder="Enter confirm password..."
+            className={`placeholder:text-sm ${
+              errors.confirmPassword ? "border-red-500 placeholder:text-red-500" : ""
+            }`}
+          />
+        </View>
+
+        {/* Terms and Subscription */}
         <View className="flex flex-row gap-2">
-          <Checkbox checked={agreeTerm} onCheckedChange={setAgreeTerm} />
-          <Text className="text-gray-600">
+          <Checkbox
+            checked={agreeTerm}
+            onCheckedChange={validateAgreeTerm}
+            className={errors.agreeTerm ? "border-red-500" : ""}
+          />
+          <Text className={`text-gray-600 ${errors.agreeTerm ? "text-red-500" : ""}`}>
             Agree to our{" "}
             <Link href="/term-of-use" className="underline">
               Terms of use
@@ -86,45 +286,19 @@ const Register = () => {
             and{" "}
             <Link href="/privacy-policy" className="underline">
               Privacy Policy
-            </Link>{" "}
+            </Link>
           </Text>
         </View>
 
         <View className="flex flex-row gap-2">
-          <Checkbox checked={agreeSubcribe} onCheckedChange={setAgreeSubcribe} />
+          <Checkbox checked={agreeSubscribe} onCheckedChange={setAgreeSubscribe} />
           <Text className="text-gray-600">Subscribe to our monthly newsletter</Text>
         </View>
 
-        <View className="w-full flex flex-col gap-2">
-          <Button variant="rounded-pri1" size="2xl">
-            <Text fontStyle="josefin-bold">Sign up</Text>
-          </Button>
-          <Text className="text-center underline">Forgot your password?</Text>
-        </View>
-
-        <View className="flex flex-row items-center">
-          <View className="w-1/4 h-[1px] bg-gray-600"></View>
-          <Text className="w-1/2 text-xl text-center">Or sign up with</Text>
-          <View className="w-1/4 h-[1px] bg-gray-600"></View>
-        </View>
-
-        <View className="w-full flex flex-row gap-2">
-          <Button variant="rounded-border" size="xl" className="w-[49%] flex flex-row gap-2">
-            <Image source={require("@/assets/images/brands/fb-logo.png")} />
-            <Text className="text-gray-600">Facebook</Text>
-          </Button>
-          <Button variant="rounded-border" size="xl" className="w-[49%] flex flex-row gap-2">
-            <Image source={require("@/assets/images/brands/gg-logo.png")} />
-            <Text className="text-gray-600"> Google</Text>
-          </Button>
-        </View>
-
-        <View className="pb-10">
-          <Text className="text-gray-600 text-center">
-            Not a member? Get exclusive access to exhibitions and events, free admission every day,
-            and much more.
-          </Text>
-        </View>
+        {/* Submit Button */}
+        <Button variant="rounded-pri1" size="2xl" onPress={handleSubmit}>
+          <Text fontStyle="josefin-bold">Sign up</Text>
+        </Button>
       </View>
     </ScrollView>
   );
